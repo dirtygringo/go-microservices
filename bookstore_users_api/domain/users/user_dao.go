@@ -3,6 +3,7 @@ package users
 import (
 	"fmt"
 
+	"github.com/dirtygringo/go-microservices/bookstore_users_api/datasources/mysql/users_db"
 	"github.com/dirtygringo/go-microservices/bookstore_users_api/utils/date_utils"
 	"github.com/dirtygringo/go-microservices/bookstore_users_api/utils/errors"
 )
@@ -12,6 +13,10 @@ var (
 )
 
 func (user *User) Get() *errors.RestError {
+	if err := users_db.Client.Ping(); err != nil {
+		panic(err)
+	}
+
 	result := usersDB[user.Id]
 	if result == nil {
 		return errors.NotFound(fmt.Sprintf("user id %d not found", user.Id))
